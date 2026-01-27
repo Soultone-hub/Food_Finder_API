@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
+    'ninja_extra',
+    'ninja_jwt.token_blacklist',
+    'ninja_jwt',
 ]
 
 MIDDLEWARE = [
@@ -115,3 +119,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+AUTH_USER_MODEL = 'accounts.User'
+
+# Simule l'envoi d'email dans la console pour les tests
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
