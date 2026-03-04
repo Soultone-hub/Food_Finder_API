@@ -84,13 +84,18 @@ def list_menu_items(request, spot_id: UUID):
 @router.post("/{spot_id}/hours", response=OpeningHourOut, auth=JWTAuth(), tags=["Horaires"])
 def add_opening_hour(request, spot_id: UUID, data: OpeningHourIn):
     spot = get_object_or_404(Spot, id=spot_id, seller=request.user)
-    # update_or_create permet de modifier si le jour existe déjà
+    # Correction des noms : day -> day_of_week, opening_time -> open_time, etc.
     hour, created = OpeningHour.objects.update_or_create(
-        spot=spot, day=data.day,
-        defaults={'opening_time': data.opening_time, 'closing_time': data.closing_time}
+        spot=spot, 
+        day_of_week=data.day_of_week, # <--- Corrigé
+        defaults={
+            'open_time': data.open_time, # <--- Corrigé
+            'close_time': data.close_time # <--- Corrigé
+        }
     )
     return hour
 
 @router.get("/{spot_id}/hours", response=List[OpeningHourOut], tags=["Horaires"])
 def list_spot_hours(request, spot_id: UUID):
-    return OpeningHour.objects.filter(spot_id=spot_id).order_by('day')
+    # Correction : .order_by('day') -> .order_by('day_of_week')
+    return OpeningHour.objects.filter(spot_id=spot_id).order_by('day_of_week')
